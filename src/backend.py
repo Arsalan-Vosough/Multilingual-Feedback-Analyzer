@@ -1,0 +1,83 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from azure_translator import translate_to_english
+from azure_sentiment import analyze_sentiment
+
+app = FastAPI()
+
+# Allow the React frontend to talk to this backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class TextInput(BaseModel):
+    text: str
+
+# ── /translate ─────────────────────────────────────────────
+@app.post("/translate")
+def translate(body: TextInput):
+    result = translate_to_english(body.text)
+    return {
+        "translated_text":   result["translated_text"],
+        "detected_language": result["detected_language"],
+        "confidence":        result["confidence"]
+    }
+
+# ── /sentiment ─────────────────────────────────────────────
+@app.post("/sentiment")
+def sentiment(body: TextInput):
+    translation = translate_to_english(body.text)
+    result = analyze_sentiment(translation["translated_text"])
+    return {
+        "translated_text": translation["translated_text"],
+        "sentiment":       result["label"],
+        "score":           round(max(result["positive"], result["negative"]), 2),
+        "positive":        result["positive"],
+        "neutral":         result["neutral"],
+        "negative":        result["negative"],
+        "aspects":         result["aspects"]
+    }
+
+# ── /classify ──────────────────────────────────────────────
+@app.post("/classify")
+def classify(body: TextInput):
+    # IBM Watson NLU goes here (next step)
+    # returning placeholder for now so the UI doesn't break
+    translation = translate_to_english(body.text)
+    return {
+        "translated_text": translation["translated_text"],
+        "categories":      ["pending — IBM Watson not connected yet"],
+        "keywords":        []
+    }
+
+# ── /pipeline ──────────────────────────────────────────────
+@app.post("/pipeline")
+def pipeline(body: TextInput):
+    # Step 1: translate
+    translation = translate_to_english(body.text)
+    translated  = translation["translated_text"]
+
+    # Step 2: sentiment
+    sentiment = analyze_sentiment(translated)
+
+    # Step 3: IBM Watson goes here (next step)
+    # placeholder for now
+    categories = ["pending — IBM Watson not connected yet"]
+    keywords   = []
+
+    return {
+        "translated_text":   translated,
+        "detected_language": translation["detected_language"],
+        "sentiment":         sentiment["label"],
+        "score":             round(max(sentiment["positive"], sentiment["negative"]), 2),
+        "positive":          sentiment["positive"],
+        "neutral":           sentiment["neutral"],
+        "negative":          sentiment["negative"],
+        "aspects":           sentiment["aspects"],
+        "categories":        categories,
+        "keywords":          keywords
+    }
