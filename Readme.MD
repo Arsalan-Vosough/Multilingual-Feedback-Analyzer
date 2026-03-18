@@ -164,15 +164,6 @@ Output:
 }
 ```
 
----
-
-## Known limitations
-
-- Sarcasm is not detected by sentiment APIs
-- Low-resource languages may have lower translation accuracy
-- IBM Watson Lite tier: 30,000 NLU items/month
-- Azure Text Analytics Free tier: 5,000 transactions/month
-- Cultural context may be lost during translation
 
 ---
 
@@ -180,9 +171,9 @@ Output:
 
 | Name | Contribution |
 |---|---|
-| Arsalan Vosough | Azure Translator + Azure Text Analytics + FastAPI backend |
-| Declen | IBM Watson NLU integration |
-| [Haben Eyasu] | React frontend + PowerPoint presentation |
+| Arsalan Vosough | Azure Translator + Azure Text Analytics + IBM Watson NLU integration + FastAPI backend |
+| Declen |  |
+| Haben Eyasu | React frontend |
 
 ---
 
