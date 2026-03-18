@@ -32,14 +32,14 @@ Multilingual-Feedback-Analyzer/
 ├── src/
 │   ├── azure_translator.py   # Azure Translator API integration
 │   ├── azure_sentiment.py    # Azure Text Analytics integration
-│   ├── ibm_watson.py         # IBM Watson NLU integration
+│   ├── ibm_watson_nlu.py     # IBM Watson NLU integration
 │   ├── backend.py            # FastAPI backend (routes)
 │   ├── App.jsx               # React frontend
 │   ├── main.jsx              # React entry point
 │   ├── index.css             # Tailwind styles
 │   └── test_azure.py         # Test script for Azure services
 ├── index.html
-├── .env                      # API keys (never commit this)
+├── .env                      # API keys 
 ├── .gitignore
 ├── package.json
 └── README.md
