@@ -46,18 +46,6 @@ def sentiment(body: TextInput):
 # ── /classify ──────────────────────────────────────────────
 @app.post("/classify")
 def classify(body: TextInput):
-    # IBM Watson NLU goes here (next step)
-    # returning placeholder for now so the UI doesn't break
-    translation = translate_to_english(body.text)
-    return {
-        "translated_text": translation["translated_text"],
-        "categories":      ["pending — IBM Watson not connected yet"],
-        "keywords":        []
-    }
-
-# ── /pipeline ──────────────────────────────────────────────
-@app.post("/classify")
-def classify(body: TextInput):
     translation = translate_to_english(body.text)
     watson      = analyze_text(translation["translated_text"])
     return {
@@ -66,6 +54,7 @@ def classify(body: TextInput):
         "keywords":        [k["text"] for k in watson["keywords"]]
     }
 
+# ── /pipeline ──────────────────────────────────────────────
 @app.post("/pipeline")
 def pipeline(body: TextInput):
     translation = translate_to_english(body.text)
