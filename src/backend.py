@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from azure_translator import translate_to_english
 from azure_sentiment import analyze_sentiment
+from ibm_watson_nlu import analyze_text
 
 app = FastAPI()
 
@@ -55,19 +56,22 @@ def classify(body: TextInput):
     }
 
 # ── /pipeline ──────────────────────────────────────────────
+@app.post("/classify")
+def classify(body: TextInput):
+    translation = translate_to_english(body.text)
+    watson      = analyze_text(translation["translated_text"])
+    return {
+        "translated_text": translation["translated_text"],
+        "categories":      watson["categories"],
+        "keywords":        [k["text"] for k in watson["keywords"]]
+    }
+
 @app.post("/pipeline")
 def pipeline(body: TextInput):
-    # Step 1: translate
     translation = translate_to_english(body.text)
     translated  = translation["translated_text"]
-
-    # Step 2: sentiment
-    sentiment = analyze_sentiment(translated)
-
-    # Step 3: IBM Watson goes here (next step)
-    # placeholder for now
-    categories = ["pending — IBM Watson not connected yet"]
-    keywords   = []
+    sentiment   = analyze_sentiment(translated)
+    watson      = analyze_text(translated)
 
     return {
         "translated_text":   translated,
@@ -78,6 +82,6 @@ def pipeline(body: TextInput):
         "neutral":           sentiment["neutral"],
         "negative":          sentiment["negative"],
         "aspects":           sentiment["aspects"],
-        "categories":        categories,
-        "keywords":          keywords
+        "categories":        watson["categories"],
+        "keywords":          [k["text"] for k in watson["keywords"]]
     }
