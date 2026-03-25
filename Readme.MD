@@ -165,15 +165,4 @@ Output:
 ```
 
 
----
-
-## Group members
-
-| Name | Contribution |
-|---|---|
-| Arsalan Vosough | Azure Translator + Azure Text Analytics + IBM Watson NLU integration + FastAPI backend |
-| Declen |  |
-| Haben Eyasu | React frontend |
-
----
 
